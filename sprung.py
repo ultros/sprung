@@ -36,16 +36,14 @@ class Device:
             self.panic()
 
     def panic(self):
-        cmd = 'echo 1 > /proc/sys/kernel/sysrq'
-        subprocess.check_output(cmd, shell=True)
-
         cmd = 'echo b > /proc/sysrq-trigger'
         subprocess.check_output(cmd, shell=True)
 
 
 def main():
-    device = Device("AAZK98GWCSAYYIV9", "/dev/sdb")
+    device = Device("AAZK98GWCSAYYIV9", "/dev/sdb")  # <serial number>, <device ID>
     device.check_device()
+
 
 if __name__ == "__main__":
     main()
