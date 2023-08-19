@@ -3,11 +3,11 @@ import re
 
 
 class Device:
-    def __init__(self, serial_number: str, device: str):
+    def __init__(self, serial_number: str, device: str) -> None:
         self.serial_number = serial_number
         self.device = device
 
-    def check_device(self):
+    def check_device(self) -> None:
         found = False
         continue_loop = True
 
@@ -35,12 +35,12 @@ class Device:
         if not found:
             self.panic()
 
-    def panic(self):
+    def panic(self) -> None:
         cmd = 'echo b > /proc/sysrq-trigger'
         subprocess.check_output(cmd, shell=True)
 
 
-def main():
+def main() -> None:
     device = Device("AAZK98GWCSAYYIV9", "/dev/sdb")  # <serial number>, <device ID>
     device.check_device()
 
