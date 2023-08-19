@@ -9,25 +9,31 @@ class Device:
 
     def check_device(self):
         found = False
-        device_info = subprocess.Popen(['/usr/bin/udevadm', 'info', self.device], stdout=subprocess.PIPE,
-                                       stderr=subprocess.PIPE)
+        continue_loop = True
 
-        for line in device_info.stdout.readlines():
-            line = line.decode()
+        while continue_loop is True:
+            device_info = subprocess.Popen(['/usr/bin/udevadm', 'info', self.device], stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE)
+            if "No such device" in device_info.stderr.readline().decode():
+                found = False
 
-            device_serial_number = re.search('(?<=ID_USB_SERIAL_SHORT=).*', line)
+            for line in device_info.stdout.readlines():
+                line = line.decode()
 
-            if device_serial_number is not None:
-                if device_serial_number.group(0) == self.serial_number:
-                    found = True
-                    break
+                device_serial_number = re.search('(?<=ID_USB_SERIAL_SHORT=).*', line)
 
-        if found:
-            print("FOUND")
-        else:
-            print("NOT FOUND")
+                if device_serial_number is not None:
+                    if device_serial_number.group(0) == self.serial_number:
+                        found = True
+                        continue_loop = True
+                    else:
+                        found = False
+
+            if found is False:
+                continue_loop = False
+
+        if not found:
             self.panic()
-
 
     def panic(self):
         cmd = 'echo 1 > /proc/sys/kernel/sysrq'
